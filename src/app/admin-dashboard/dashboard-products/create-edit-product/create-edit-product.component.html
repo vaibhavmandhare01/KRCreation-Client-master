@@ -1,0 +1,120 @@
+<!-- <div class="border bg-white rounded-md">
+  <div class="flex p-4 bg-gray-200">
+    <h6 class="text-normal">Add New Product</h6>
+  </div>
+  
+</div> -->
+
+<div class="p-2">
+  <div class="block p-6 rounded-sm shadow-sm bg-white">
+    <form>
+      <div class="form-group mb-6">
+        <input type="text" class="form-control block
+          w-full
+          px-3
+          py-1.5
+          text-base
+          font-normal
+          text-gray-700
+          bg-white bg-clip-padding
+          border border-solid border-gray-300
+          rounded
+          transition
+          ease-in-out
+          m-0
+          focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInput7"
+          placeholder="Name">
+      </div>
+
+      <div class="form-group mb-6">
+        <select class="form-select" aria-label="Default select example">
+          <option>select Category</option>
+          <option *ngFor="let item of category" [value]="item.value">{{item.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-group mb-6">
+        <input type="number" class="form-control block
+          w-full
+          px-3
+          py-1.5
+          text-base
+          font-normal
+          text-gray-700
+          bg-white bg-clip-padding
+          border border-solid border-gray-300
+          rounded
+          transition
+          ease-in-out
+          m-0
+          focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInput8"
+          placeholder="Price">
+      </div>
+      <div class="form-group mb-6">
+        <textarea class="
+          form-control
+          block
+          w-full
+          px-3
+          py-1.5
+          text-base
+          font-normal
+          text-gray-700
+          bg-white bg-clip-padding
+          border border-solid border-gray-300
+          rounded
+          transition
+          ease-in-out
+          m-0
+          focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+        " id="exampleFormControlTextarea13" rows="3" placeholder="desciption"></textarea>
+      </div>
+      <div class="form-group form-check mb-6">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+            Is active
+          </label>
+        </div>
+      </div>
+      <!--   <div class="control-section">
+        <div class="col-lg-8">
+          <div class="control_wrapper">
+            <ejs-uploader #chunkupload id='chunkfileupload' [maxFileSize]=104857600 [autoUpload]=false
+              [asyncSettings]='path' [dropArea]='dropElement' (pausing)='onPausing($event)'
+              (resuming)='onResuming($event)' (removing)='onFileRemove($event)'
+              (chunkFailure)='onBeforefailure($event)'></ejs-uploader>
+          </div>
+        </div>
+        <div class="col-lg-4 property-section">
+          <div class="property-panel-section">
+            <div class="property-panel-header">Properties</div>
+            <div class="property-panel-content">
+              <ejs-dropdownlist id='chunksizes' #sample [dataSource]='chunkData' (change)='onChange($event)'
+                [value]='value' [fields]='fields' [placeholder]='waterMark'></ejs-dropdownlist>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <button type="submit" class="
+        w-full
+        px-6
+        py-2.5
+        bg-blue-600
+        text-white
+        font-medium
+        text-xs
+        leading-tight
+        uppercase
+        rounded
+        shadow-md
+        hover:bg-blue-700 hover:shadow-lg
+        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+        active:bg-blue-800 active:shadow-lg
+        transition
+        duration-150
+        ease-in-out">Send</button>
+    </form>
+  </div>
+</div>
