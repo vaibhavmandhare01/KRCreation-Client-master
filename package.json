@@ -30,6 +30,7 @@
     "@syncfusion/ej2-angular-buttons": "19.2.51",
     "@syncfusion/ej2-angular-popups": "19.2.51",
     "@syncfusion/ej2-angular-inputs": "19.2.51",
+    "@fortawesome/angular-fontawesome": "0.9.0",
     "ng-particles": "^2.7.3",
     "ngx-skeleton-loader": "^2.10.0",
     "rxjs": "~6.6.0",

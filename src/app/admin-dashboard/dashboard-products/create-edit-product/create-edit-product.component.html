@@ -1,15 +1,14 @@
-<!-- <div class="border bg-white rounded-md">
-  <div class="flex p-4 bg-gray-200">
-    <h6 class="text-normal">Add New Product</h6>
-  </div>
-  
-</div> -->
-
 <div class="p-2">
   <div class="block p-6 rounded-sm shadow-sm bg-white">
-    <form>
+    <!--  <div class="row d-flex justify-content-end">
+      <button type="button" class="btn btn-default"><i class="fa-regular fa-xmark"></i> </button>
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div> -->
+    <form [formGroup]="productForm">
       <div class="form-group mb-6">
-        <input type="text" class="form-control block
+        <input type="text" formControlName="name" class="form-control block
           w-full
           px-3
           py-1.5
@@ -24,17 +23,22 @@
           m-0
           focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInput7"
           placeholder="Name">
+        <small *ngIf="showValidationError  && productForm.controls.name.status == 'INVALID'"
+          class="form-text text-danger">Required.</small>
       </div>
 
       <div class="form-group mb-6">
-        <select class="form-select" aria-label="Default select example">
-          <option>select Category</option>
-          <option *ngFor="let item of category" [value]="item.value">{{item.name}}</option>
+        <select class="form-select" formControlName="category" aria-label="Default select example">
+          <option selected value="0">select Category</option>
+          <option *ngFor="let item of category" [value]="item._id">{{item.name}}</option>
         </select>
+        <small
+          *ngIf="showValidationError  && (productForm.controls.category.status == 'INVALID' || productForm.value.category == '0')"
+          class="form-text text-danger">Required.</small>
       </div>
 
       <div class="form-group mb-6">
-        <input type="number" class="form-control block
+        <input type="number" formControlName="price" class="form-control block
           w-full
           px-3
           py-1.5
@@ -49,9 +53,11 @@
           m-0
           focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="exampleInput8"
           placeholder="Price">
+        <small *ngIf="showValidationError  && productForm.controls.price.status == 'INVALID'"
+          class="form-text text-danger">Required.</small>
       </div>
       <div class="form-group mb-6">
-        <textarea class="
+        <textarea formControlName="description" class="
           form-control
           block
           w-full
@@ -69,52 +75,64 @@
           focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
         " id="exampleFormControlTextarea13" rows="3" placeholder="desciption"></textarea>
       </div>
-      <div class="form-group form-check mb-6">
+      <div class="form-group p-0 form-check mb-6">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <input formControlName="isActive" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
           <label class="form-check-label" for="flexCheckDefault">
             Is active
           </label>
         </div>
       </div>
-      <div class="control-section">
-        <div class="col-lg-8">
-          <div class="control_wrapper">
-            <ejs-uploader #chunkupload id='chunkfileupload' [maxFileSize]=104857600 [autoUpload]=false
-              [asyncSettings]='path' [dropArea]='dropElement' (pausing)='onPausing($event)'
-              (resuming)='onResuming($event)' (removing)='onFileRemove($event)'
-              (chunkFailure)='onBeforefailure($event)'></ejs-uploader>
+
+      <div class="flex items-center justify-center w-full">
+        <label for="dropzone-file"
+          class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span>
+              or drag and drop</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
           </div>
-        </div>
-        <!-- <div class="col-lg-4 property-section">
-          <div class="property-panel-section">
-            <div class="property-panel-header">Properties</div>
-            <div class="property-panel-content">
-              <ejs-dropdownlist id='chunksizes' #sample [dataSource]='chunkData' (change)='onChange($event)'
-                [value]='value' [fields]='fields' [placeholder]='waterMark'></ejs-dropdownlist>
-            </div>
-          </div>
-        </div> -->
+          <input id="dropzone-file" type="file" class="hidden" (change)="onSelectFile($event)" multiple />
+        </label>
       </div>
 
-      <button type="submit" class="
-        w-full
-        px-6
-        py-2.5
-        bg-blue-600
-        text-white
-        font-medium
-        text-xs
-        leading-tight
-        uppercase
-        rounded
-        shadow-md
-        hover:bg-blue-700 hover:shadow-lg
-        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-        active:bg-blue-800 active:shadow-lg
-        transition
-        duration-150
-        ease-in-out">Send</button>
+      <div class="mt-3 row">
+        <div
+          class="col p-0 m-2 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+          *ngFor="let file of selectedFiles">
+          <div class="d-flex justify-content-between px-2">
+            <!--  <span>{{file.name}}</span> -->
+            <p class="text-center p-1 text-truncate">{{file.name}}</p>
+            <button type="button" (click)="deleteFile(file)" class="btn btn-outline-danger border-0 shadow-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+                viewBox="0 0 16 16">
+                <path
+                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                </path>
+                <path fill-rule="evenodd"
+                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z">
+                </path>
+              </svg>
+            </button>
+          </div>
+          <div>
+            <img class="rounded-t-lg" *ngIf="file.format === 'image'" src="{{file.url}}" alt="" data-toggle="tooltip"
+              data-placement="bottom" title="{{file.name}}" />
+            <video src="{{file.url}}" *ngIf="file.format === 'video'" controls data-toggle="tooltip"
+              data-placement="bottom" title="{{file.name}}"></video>
+          </div>
+        </div>
+      </div>
+
+      <footer class="d-flex justify-content-center mt-2">
+        <button type="button" (click)="save()" class="btn btn-outline-success m-2">Create</button>
+        <button type="button" (click)="cancel()" class="btn btn-outline-danger m-2">Cancel</button>
+      </footer>
     </form>
   </div>
 </div>

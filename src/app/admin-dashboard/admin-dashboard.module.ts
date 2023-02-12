@@ -16,10 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DashboardProductsComponent } from './dashboard-products/dashboard-products.component';
 import { CreateEditProductComponent } from './dashboard-products/create-edit-product/create-edit-product.component';
-import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
-import { CheckBoxModule } from '@syncfusion/ej2-angular-buttons';
-import { DialogModule } from '@syncfusion/ej2-angular-popups';
-import { UploaderModule } from '@syncfusion/ej2-angular-inputs';
+
 
 @NgModule({
   declarations: [
@@ -33,11 +30,7 @@ import { UploaderModule } from '@syncfusion/ej2-angular-inputs';
     CreateEditProductComponent
   ],
   imports: [CommonModule, AdminDashboardRoutingModule, SharedModule, MatMenuModule,
-    FormsModule, NgbDatepickerModule, ReactiveFormsModule,
-    DropDownListModule,
-    CheckBoxModule,
-    DialogModule,
-    UploaderModule
+    FormsModule, NgbDatepickerModule, ReactiveFormsModule
   ]
 })
 export class AdminDashboardModule { }

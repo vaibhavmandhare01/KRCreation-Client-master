@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EmitType, detach, isNullOrUndefined } from '@syncfusion/ej2-base';
-import { UploaderComponent, RemovingEventArgs } from '@syncfusion/ej2-angular-inputs';
-import { createSpinner, showSpinner, hideSpinner } from '@syncfusion/ej2-popups';
-import { DropDownListComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-dropdowns';
+import { CategoryService } from '../../../shared/service-proxy/category/category.service';
+import { Router } from '@angular/router';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { ProductService } from 'src/app/shared/service-proxy/product/product.service';
 
 @Component({
   selector: 'app-create-edit-product',
@@ -12,81 +12,88 @@ import { DropDownListComponent, ChangeEventArgs } from '@syncfusion/ej2-angular-
 })
 export class CreateEditProductComponent implements OnInit {
 
-
+  selectedFiles: Filedata[] = new Array();
+  url;
+  format;
   category = [];
-  constructor(private http: HttpClient) { }
+  showValidationError = false;
+  productForm = this.fb.group({
+    name: new FormControl(null, [Validators.required]),
+    category: new FormControl('0', [Validators.required]),
+    price: new FormControl(null, [Validators.required]),
+    description: new FormControl(null),
+    isActive: new FormControl(true),
+    images: new FormControl(null)
+  });
 
-  @ViewChild('chunkupload') chunkupload: UploaderComponent;
-  @ViewChild('sample')
-  public listObj: DropDownListComponent;
-  // define the JSON of data
-  public chunkData: Object[] = [
-    { value: '500000', size: '500 KB' },
-    { value: '1000000', size: '1 MB' },
-    { value: '2000000', size: '2 MB' }
-  ];
-  public fields: Object = { text: 'size', value: 'value' };
-  // set the placeholder to DropDownList input element
-  public waterMark: string = 'Select chunk size';
-  // set the value to select an item based on mapped value at initial rendering
-  public value: string = '500000';
-  public path: Object = {
-    saveUrl: 'https://ej2.syncfusion.com/services/api/uploadbox/Save',
-    removeUrl: 'https://ej2.syncfusion.com/services/api/uploadbox/Remove',
-    chunkSize: 500000
-  };
-
-  public onChange(args: ChangeEventArgs): void {
-    this.chunkupload.asyncSettings.chunkSize = parseInt(args.itemData.value);
-  }
-
-  public onFileRemove(args: RemovingEventArgs): void {
-    args.postRawFile = false;
-  }
-
-  public isInteraction: boolean = false;
-  // to update flag variable value for automatic pause and resume
-  public onPausing(args: any): void {
-    if (args.event !== null && !navigator.onLine) {
-      this.isInteraction = true;
-    } else {
-      this.isInteraction = false;
-    }
-  }
-  // to update flag variable value for automatic pause and resume
-  public onResuming(args: any): void {
-    if (args.event !== null && !navigator.onLine) {
-      this.isInteraction = true;
-    } else {
-      this.isInteraction = false;
-    }
-  }
-
-  public dropElement: HTMLElement = document.getElementsByClassName('control-section')[0] as HTMLElement;
-  // to prevent triggering chunk-upload failure event and to pause uploading on network failure
-  public onBeforefailure(args: any): void {
-    let proxy: any = this;
-    args.cancel = !this.isInteraction;
-    /* tslint:disable */
-    // interval to check network availability on every 500 milliseconds
-    let clearTimeInterval: any = setInterval(() => {
-      if (navigator.onLine && !isNullOrUndefined(proxy.chunkupload.filesData[0]) && proxy.chunkupload.filesData[0].statusCode == 4) {
-        proxy.chunkupload.resume(proxy.chunkupload.filesData);
-        clearSetInterval();
-      } else {
-        if (!proxy.isInteraction && !isNullOrUndefined(proxy.chunkupload.filesData[0]) && proxy.chunkupload.filesData[0].statusCode == 3) {
-          proxy.chunkupload.pause(proxy.chunkupload.filesData);
-        }
-      }
-    }, 500);
-    // clear Interval after when network is available.
-    function clearSetInterval(): void {
-      clearInterval(clearTimeInterval);
-    }
-  }
-
+  constructor(
+    private http: HttpClient,
+    private _CategoryService: CategoryService,
+    private router: Router,
+    private fb: FormBuilder,
+    private _ProductService: ProductService) { }
 
   ngOnInit(): void {
+    this.getCategoryList();
   }
 
+  getCategoryList() {
+    this._CategoryService.getAllCategory()
+      .subscribe(res => {
+        this.category = res;
+      });
+  }
+
+  onSelectFile(event) {
+    const files = event.target.files;
+    for (let file of files) {
+      let filedata = new Filedata();
+      if (file) {
+        var reader = new FileReader();
+        filedata.name = file.name;
+        reader.readAsDataURL(file);
+        if (file.type.indexOf('image') > -1) {
+          filedata.format = 'image';
+        } else if (file.type.indexOf('video') > -1) {
+          filedata.format = 'video';
+        }
+        reader.onload = (event) => {
+          filedata.url = (<FileReader>event.target).result;
+          this.selectedFiles.push(filedata);
+        }
+      }
+    }
+  }
+
+  deleteFile(file) {
+    let index = this.selectedFiles.findIndex(s => s.name == file.name);
+    if (index > -1)
+      this.selectedFiles.splice(index, 1);
+  }
+
+  cancel() {
+    this.router.navigate(['adminDashboard/product']);
+  }
+
+  save() {
+    this.showValidationError = false;
+    if (!this.productForm.valid || this.productForm.value.category == '0') {
+      this.showValidationError = true;
+      return false;
+    }
+    if (this.selectedFiles.length > 0) {
+      this.productForm.controls.images.setValue(JSON.stringify(this.selectedFiles));
+    }
+
+    this._ProductService.createProduct(this.productForm.value)
+      .subscribe(res => {
+        console.log(res);
+      });
+  }
+}
+
+class Filedata {
+  name: string;
+  url: string | ArrayBuffer;
+  format: string;
 }
