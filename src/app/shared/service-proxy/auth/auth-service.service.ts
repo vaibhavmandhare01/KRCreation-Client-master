@@ -26,12 +26,12 @@ export class AuthServiceService {
 
   register(body: any) {
     return this._http.post<User>(this.apiUrl + 'register', body, this.noAuthHeader)
-      .pipe(catchError(err => this.errorHandler.catchError(err)))
+    //.pipe(catchError(err => this.errorHandler.catchError(err)))
   }
 
   login(body: any) {
     return this._http.post<any>(this.apiUrl + 'authenticate', body, this.noAuthHeader)
-      .pipe(catchError(err => this.errorHandler.catchError(err)));
+    //.pipe(catchError(err => this.errorHandler.catchError(err)));
   }
 
   getUserProfile() {
